@@ -7,10 +7,13 @@ def dropColumns(data, drop):
     for col in drop:
         data.drop(col, 1, inplace=True)
 
-def getMean(data,col,cond_value):
+
+def getMean(data, col, cond_value):
     masked = np.ma.masked_array(data[col], data[col] == cond_value)
     mean = masked.mean()
+    mean = int(mean)
     return mean
+
 
 colnames_cloud_type = ['STATIONS_ID', 'MESS_DATUM', 'QN_8', 'V_N', 'V_N_I', 'V_S1_CS', 'V_S1_CSA', 'V_S1_HHS',
                        'V_S1_NS', 'V_S2_CS', 'V_S2_CSA', 'V_S2_HHS',
@@ -38,13 +41,13 @@ drop_temperature = ['QN_9', 'eor']
 colnames_wind = ['STATIONS_ID', 'MESS_DATUM', 'QN_3', 'F', 'D', 'eor']
 drop_wind = ['QN_3', 'eor']
 
-cloud_type = pd.read_csv('Weather/cloud_type/cloud_type.txt', names=colnames_cloud_type, sep=';',header=1)
-cloudiness = pd.read_csv('Weather/cloudiness/cloudiness.txt', names=colnames_cloudiness, sep=';')
-precipitation = pd.read_csv('Weather/precipitation/precipitation.txt', names=colnames_precipitation, sep=';')
-pressure = pd.read_csv('Weather/pressure/pressure.txt', names=colnames_pressure, sep=';')
-sun = pd.read_csv('Weather/sun/sun.txt', names=colnames_sun, sep=';')
-temperature = pd.read_csv('Weather/temperature/temperature.txt', names=colnames_temperature, sep=';')
-wind = pd.read_csv('Weather/wind/wind.txt', names=colnames_wind, sep=';')
+cloud_type = pd.read_csv('Weather/cloud_type/cloud_type.txt', names=colnames_cloud_type, sep=';', header=1)
+cloudiness = pd.read_csv('Weather/cloudiness/cloudiness.txt', names=colnames_cloudiness, sep=';', header=1)
+precipitation = pd.read_csv('Weather/precipitation/precipitation.txt', names=colnames_precipitation, sep=';', header=1)
+pressure = pd.read_csv('Weather/pressure/pressure.txt', names=colnames_pressure, sep=';', header=1)
+sun = pd.read_csv('Weather/sun/sun.txt', names=colnames_sun, sep=';', header=1)
+temperature = pd.read_csv('Weather/temperature/temperature.txt', names=colnames_temperature, sep=';', header=1)
+wind = pd.read_csv('Weather/wind/wind.txt', names=colnames_wind, sep=';', header=1)
 
 dropColumns(cloud_type, drop_cloud_type)
 dropColumns(cloudiness, drop_cloudiness)
@@ -54,12 +57,37 @@ dropColumns(sun, drop_sun)
 dropColumns(temperature, drop_temperature)
 dropColumns(wind, drop_wind)
 
-#cloud_type.where(cloud_type[:,'V_S1_HHS'] == '-999',cloud_type[:,'V_S1_HHS'].median,inplace=True)
-
+cloud_type['V_S1_HHS'] = pd.to_numeric(cloud_type['V_S1_HHS'])
 cloud_type['V_S2_HHS'] = pd.to_numeric(cloud_type['V_S2_HHS'])
+pressure['P'] = pd.to_numeric(pressure['P'])
+pressure['P0'] = pd.to_numeric(pressure['P0'])
+sun['SD_SO'] = pd.to_numeric(sun['SD_SO'])
+temperature['TT_TU'] = pd.to_numeric(temperature['TT_TU'])
+temperature['RF_TU'] = pd.to_numeric(temperature['RF_TU'])
+wind['D'] = pd.to_numeric(wind['D'])
 
-#cloud_type['V_S2_HHS'] = np.where(cloud_type['V_S2_HHS'] == '-999', median,cloud_type['V_S2_HHS'])
+mean_V_S1_HHS = getMean(cloud_type, 'V_S1_HHS', -999)
+mean_V_S2_HHS = getMean(cloud_type, 'V_S2_HHS', -999)
+mean_P = getMean(pressure, 'P', -999)
+mean_P0 = getMean(pressure, 'P0', -999)
+mean_SD_SO = getMean(sun, 'SD_SO', -999)
+mean_TT_TU = getMean(temperature, 'TT_TU', -999)
+mean_RF_TU = getMean(temperature, 'RF_TU', -999)
+mean_D = getMean(wind, 'D', -999)
 
-#print(cloud_type['V_S2_HHS'])
+cloud_type["V_S1_HHS"] = np.where(cloud_type["V_S1_HHS"] == -999, mean_V_S1_HHS, cloud_type["V_S1_HHS"])
+cloud_type["V_S2_HHS"] = np.where(cloud_type["V_S2_HHS"] == -999, mean_V_S2_HHS, cloud_type["V_S2_HHS"])
+pressure["P"] = np.where(pressure["P"] == -999, mean_P, pressure["P"])
+pressure["P0"] = np.where(pressure["P0"] == -999, mean_P0, pressure["P0"])
+sun["SD_SO"] = np.where(sun["SD_SO"] == -999, mean_SD_SO, sun["SD_SO"])
+temperature["TT_TU"] = np.where(temperature["TT_TU"] == -999, mean_TT_TU, temperature["TT_TU"])
+temperature["RF_TU"] = np.where(temperature["RF_TU"] == -999, mean_RF_TU, temperature["RF_TU"])
+wind["D"] = np.where(wind["D"] == -999, mean_D, wind["D"])
 
-print(getMean(cloud_type,'V_S2_HHS',-999))
+result = pd.merge(cloud_type, cloudiness, on=['STATIONS_ID', 'MESS_DATUM'])
+result = pd.merge(result, pressure, on=['STATIONS_ID', 'MESS_DATUM'])
+result = pd.merge(result, precipitation, on=['STATIONS_ID', 'MESS_DATUM'])
+result = pd.merge(result, temperature, on=['STATIONS_ID', 'MESS_DATUM'])
+result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
+result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
+print(result)
