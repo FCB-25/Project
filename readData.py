@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import sys
 
 
 def dropColumns(data, drop):
@@ -58,6 +57,7 @@ dropColumns(temperature, drop_temperature)
 dropColumns(wind, drop_wind)
 
 cloud_type['V_S1_HHS'] = pd.to_numeric(cloud_type['V_S1_HHS'])
+cloud_type['V_S1_NS'] = pd.to_numeric(cloud_type['V_S1_NS'])
 cloud_type['V_S1_CS'] = pd.to_numeric(cloud_type['V_S1_CS'])
 cloud_type['V_S2_HHS'] = pd.to_numeric(cloud_type['V_S2_HHS'])
 cloud_type['V_S2_CS'] = pd.to_numeric(cloud_type['V_S2_CS'])
@@ -69,8 +69,10 @@ temperature['RF_TU'] = pd.to_numeric(temperature['RF_TU'])
 wind['D'] = pd.to_numeric(wind['D'])
 
 mean_V_S1_HHS = getMean(cloud_type, 'V_S1_HHS', -999)
+mean_V_S1_NS = getMean(cloud_type, 'V_S1_NS', -999)
 mean_V_S1_CS = getMean(cloud_type, 'V_S1_CS', -999)
 mean_V_S2_HHS = getMean(cloud_type, 'V_S2_HHS', -999)
+mean_V_S2_NS = getMean(cloud_type, 'V_S2_NS', -999)
 mean_V_S2_CS = getMean(cloud_type, 'V_S2_CS', -999)
 mean_P = getMean(pressure, 'P', -999)
 mean_P0 = getMean(pressure, 'P0', -999)
@@ -79,16 +81,18 @@ mean_TT_TU = getMean(temperature, 'TT_TU', -999)
 mean_RF_TU = getMean(temperature, 'RF_TU', -999)
 mean_D = getMean(wind, 'D', -999)
 
-cloud_type["V_S1_HHS"] = np.where(cloud_type["V_S1_HHS"] == -999, mean_V_S1_HHS, cloud_type["V_S1_HHS"])
-cloud_type["V_S1_CS"] = np.where(cloud_type["V_S1_CS"] == -999, mean_V_S1_CS, cloud_type["V_S1_CS"])
-cloud_type["V_S2_HHS"] = np.where(cloud_type["V_S2_HHS"] == -999, mean_V_S2_HHS, cloud_type["V_S2_HHS"])
-cloud_type["V_S2_CS"] = np.where(cloud_type["V_S2_CS"] == -999, mean_V_S2_CS, cloud_type["V_S2_CS"])
+cloud_type["V_S1_HHS"] = np.where(cloud_type["V_S1_HHS"] == -999, int(mean_V_S1_HHS), cloud_type["V_S1_HHS"])
+cloud_type["V_S1_NS"] = np.where(cloud_type["V_S1_NS"] == -999, int(mean_V_S1_NS), cloud_type["V_S1_NS"])
+cloud_type["V_S1_CS"] = np.where(cloud_type["V_S1_CS"] == -999, int(mean_V_S1_CS), cloud_type["V_S1_CS"])
+cloud_type["V_S2_HHS"] = np.where(cloud_type["V_S2_HHS"] == -999, int(mean_V_S2_HHS), cloud_type["V_S2_HHS"])
+cloud_type["V_S2_NS"] = np.where(cloud_type["V_S2_NS"] == -999, int(mean_V_S2_NS), cloud_type["V_S2_NS"])
+cloud_type["V_S2_CS"] = np.where(cloud_type["V_S2_CS"] == -999, int(mean_V_S2_CS), cloud_type["V_S2_CS"])
 pressure["P"] = np.where(pressure["P"] == -999, mean_P, pressure["P"])
 pressure["P0"] = np.where(pressure["P0"] == -999, mean_P0, pressure["P0"])
 sun["SD_SO"] = np.where(sun["SD_SO"] == -999, mean_SD_SO, sun["SD_SO"])
 temperature["TT_TU"] = np.where(temperature["TT_TU"] == -999, mean_TT_TU, temperature["TT_TU"])
 temperature["RF_TU"] = np.where(temperature["RF_TU"] == -999, mean_RF_TU, temperature["RF_TU"])
-wind["D"] = np.where(wind["D"] == -999, mean_D, wind["D"])
+wind["D"] = np.where(wind["D"] == -999, int(mean_D), wind["D"])
 
 result = pd.merge(cloud_type, cloudiness, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, pressure, on=['STATIONS_ID', 'MESS_DATUM'])
