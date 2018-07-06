@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import sys
 
 
 def dropColumns(data, drop):
@@ -11,7 +12,6 @@ def dropColumns(data, drop):
 def getMean(data, col, cond_value):
     masked = np.ma.masked_array(data[col], data[col] == cond_value)
     mean = masked.mean()
-    mean = int(mean)
     return mean
 
 
@@ -58,7 +58,9 @@ dropColumns(temperature, drop_temperature)
 dropColumns(wind, drop_wind)
 
 cloud_type['V_S1_HHS'] = pd.to_numeric(cloud_type['V_S1_HHS'])
+cloud_type['V_S1_CS'] = pd.to_numeric(cloud_type['V_S1_CS'])
 cloud_type['V_S2_HHS'] = pd.to_numeric(cloud_type['V_S2_HHS'])
+cloud_type['V_S2_CS'] = pd.to_numeric(cloud_type['V_S2_CS'])
 pressure['P'] = pd.to_numeric(pressure['P'])
 pressure['P0'] = pd.to_numeric(pressure['P0'])
 sun['SD_SO'] = pd.to_numeric(sun['SD_SO'])
@@ -67,7 +69,9 @@ temperature['RF_TU'] = pd.to_numeric(temperature['RF_TU'])
 wind['D'] = pd.to_numeric(wind['D'])
 
 mean_V_S1_HHS = getMean(cloud_type, 'V_S1_HHS', -999)
+mean_V_S1_CS = getMean(cloud_type, 'V_S1_CS', -999)
 mean_V_S2_HHS = getMean(cloud_type, 'V_S2_HHS', -999)
+mean_V_S2_CS = getMean(cloud_type, 'V_S2_CS', -999)
 mean_P = getMean(pressure, 'P', -999)
 mean_P0 = getMean(pressure, 'P0', -999)
 mean_SD_SO = getMean(sun, 'SD_SO', -999)
@@ -76,7 +80,9 @@ mean_RF_TU = getMean(temperature, 'RF_TU', -999)
 mean_D = getMean(wind, 'D', -999)
 
 cloud_type["V_S1_HHS"] = np.where(cloud_type["V_S1_HHS"] == -999, mean_V_S1_HHS, cloud_type["V_S1_HHS"])
+cloud_type["V_S1_CS"] = np.where(cloud_type["V_S1_CS"] == -999, mean_V_S1_CS, cloud_type["V_S1_CS"])
 cloud_type["V_S2_HHS"] = np.where(cloud_type["V_S2_HHS"] == -999, mean_V_S2_HHS, cloud_type["V_S2_HHS"])
+cloud_type["V_S2_CS"] = np.where(cloud_type["V_S2_CS"] == -999, mean_V_S2_CS, cloud_type["V_S2_CS"])
 pressure["P"] = np.where(pressure["P"] == -999, mean_P, pressure["P"])
 pressure["P0"] = np.where(pressure["P0"] == -999, mean_P0, pressure["P0"])
 sun["SD_SO"] = np.where(sun["SD_SO"] == -999, mean_SD_SO, sun["SD_SO"])
