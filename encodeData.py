@@ -12,4 +12,6 @@ result.drop('RowID', 1, inplace=True)
 
 # HotEncode
 
+
+
 print(result)
