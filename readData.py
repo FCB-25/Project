@@ -16,15 +16,14 @@ def getMean(data, col, cond_value):
 
 
 colnames_cloud_type = ['STATIONS_ID', 'MESS_DATUM', 'QN_8', 'V_N', 'V_N_I', 'V_S1_CS', 'V_S1_CSA', 'V_S1_HHS',
-                       'V_S1_NS', 'V_S2_CS', 'V_S2_CSA', 'V_S2_HHS',
-                       'V_S2_NS', 'V_S3_CS', 'V_S3_CSA', 'V_S3_HHS', 'V_S3_NS', 'V_S4_CS', 'V_S4_CSA', 'V_S4_HHS',
-                       'V_S4_NS', 'eor']
-drop_cloud_type = ['QN_8', 'V_S1_CSA', 'V_S2_CSA', 'V_S3_CS', 'V_S3_CSA', 'V_S3_HHS', 'V_S3_NS', 'V_S4_CS', 'V_S4_CSA',
-                   'V_S4_HHS',
-                   'V_S4_NS', 'eor']
+                       'V_S1_NS', 'V_S2_CS', 'V_S2_CSA', 'V_S2_HHS', 'V_S2_NS', 'V_S3_CS', 'V_S3_CSA', 'V_S3_HHS',
+                       'V_S3_NS', 'V_S4_CS', 'V_S4_CSA', 'V_S4_HHS', 'V_S4_NS', 'eor']
+drop_cloud_type = ['QN_8', 'V_N_I', 'V_S1_CSA', 'V_S2_CSA', 'V_S3_CS', 'V_S3_CSA', 'V_S3_HHS', 'V_S3_NS', 'V_S4_CS',
+                   'V_S4_CSA',
+                   'V_S4_HHS', 'V_S4_NS', 'eor']
 
 colnames_cloudiness = ['STATIONS_ID', 'MESS_DATUM', 'QN_8', 'V_N_I', 'V_N', 'eor']
-drop_cloudiness = ['QN_8', 'eor']
+drop_cloudiness = ['QN_8', 'V_N_I', 'eor']
 
 colnames_precipitation = ['STATIONS_ID', 'MESS_DATUM', 'QN_8', 'R1', 'RS_IND', 'WRTR', 'eor']
 drop_precipitation = ['QN_8', 'WRTR', 'eor']
@@ -103,3 +102,7 @@ result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
 
 print(result)
+results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
+                                        'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
+                                        'R1', 'RS_IND',
+                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results.csv')
