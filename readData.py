@@ -101,8 +101,8 @@ result = pd.merge(result, temperature, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
 
-print(result)
-results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
-                                        'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
-                                        'R1', 'RS_IND',
-                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results.csv')
+#print(result)
+#results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
+#                                        'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
+#                                        'R1', 'RS_IND',
+#                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results.csv')
