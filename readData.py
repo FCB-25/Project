@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import sys
+import xlsxwriter
 
 
 def dropColumns(data, drop):
@@ -96,4 +97,5 @@ result = pd.merge(result, precipitation, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, temperature, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
+
 print(result)
