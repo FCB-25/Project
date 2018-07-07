@@ -92,6 +92,7 @@ pressure["P0"] = np.where(pressure["P0"] == -999, mean_P0, pressure["P0"])
 sun["SD_SO"] = np.where(sun["SD_SO"] == -999, mean_SD_SO, sun["SD_SO"])
 temperature["TT_TU"] = np.where(temperature["TT_TU"] == -999, mean_TT_TU, temperature["TT_TU"])
 temperature["RF_TU"] = np.where(temperature["RF_TU"] == -999, mean_RF_TU, temperature["RF_TU"])
+precipitation["RS_IND"] = np.where(precipitation["RS_IND"] == -999, 2, precipitation["RS_IND"])
 wind["D"] = np.where(wind["D"] == -999, int(mean_D), wind["D"])
 
 result = pd.merge(cloud_type, cloudiness, on=['STATIONS_ID', 'MESS_DATUM'])
@@ -102,7 +103,7 @@ result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
 
 #print(result)
-#results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
-#                                        'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
-#                                        'R1', 'RS_IND',
-#                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results.csv')
+results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
+                                        'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
+                                        'R1', 'RS_IND',
+                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results2.csv')
