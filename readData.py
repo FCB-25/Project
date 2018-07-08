@@ -1,7 +1,5 @@
 import numpy as np
 import pandas as pd
-import sys
-import xlsxwriter
 
 def dropColumns(data, drop):
     # drop columns which are not needed
