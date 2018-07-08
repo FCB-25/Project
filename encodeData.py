@@ -41,15 +41,28 @@ if __name__ == '__main__':
     X, y = XY[:,sel], XY[:, 13]
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75,test_size=0.25, random_state=0)
 
-    # results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
-    #                                        'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
-    #                                        'R1', 'RS_IND',
-    #                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results2.csv')
-
 
     features = make_union(
+        make_pipeline(ColumnSelector(0)),
+        make_pipeline(ColumnSelector(1)),
+        make_pipeline(ColumnSelector(2)),
         make_pipeline(ColumnSelector(3), OneHotEncoder()),
+        make_pipeline(ColumnSelector(4)),
+        make_pipeline(ColumnSelector(5)),
         make_pipeline(ColumnSelector(6), OneHotEncoder()),
+        make_pipeline(ColumnSelector(7)),
+        make_pipeline(ColumnSelector(8)),
+        make_pipeline(ColumnSelector(9)),
+        make_pipeline(ColumnSelector(10)),
+        make_pipeline(ColumnSelector(11)),
+        make_pipeline(ColumnSelector(12)),
+        make_pipeline(ColumnSelector(13)),
+        make_pipeline(ColumnSelector(14)),
+        make_pipeline(ColumnSelector(15)),
+        make_pipeline(ColumnSelector(16)),
+        make_pipeline(ColumnSelector(17)),
+        make_pipeline(ColumnSelector(18)),
+
         #make_pipeline(ColumnSelector(13), OneHotEncoder()),
     )
 
