@@ -28,7 +28,7 @@ if __name__ == '__main__':
     colnames = ['RowID', 'STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS', 'V_S1_NS', 'V_S2_CS', 'V_S2_HHS',
                 'V_S2_NS', 'V_N_y', 'P', 'P0', 'R1', 'RS_IND', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']
 
-    result = pd.read_csv('results2.csv', names=colnames, sep=',', header=1)
+    result = pd.read_csv('results_more.csv', names=colnames, sep=',', header=1)
 
     result.drop('RowID', 1, inplace=True)
 
@@ -37,18 +37,20 @@ if __name__ == '__main__':
     RS_IND = result.get('RS_IND').astype(str)  # [0,1]
 
     XY = result.values
-
-    X, y = XY, XY[:, 13]
+    sel = [x for x in range(XY.shape[1]) if x != 13]
+    X, y = XY[:,sel], XY[:, 13]
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75,test_size=0.25, random_state=0)
 
-
-
+    # results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
+    #                                        'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
+    #                                        'R1', 'RS_IND',
+    #                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results2.csv')
 
 
     features = make_union(
-       # make_pipeline(ColumnSelector(3), OneHotEncoder()),
-       # make_pipeline(ColumnSelector(6), OneHotEncoder()),
-        make_pipeline(ColumnSelector(13), OneHotEncoder()),
+        make_pipeline(ColumnSelector(3), OneHotEncoder()),
+        make_pipeline(ColumnSelector(6), OneHotEncoder()),
+        #make_pipeline(ColumnSelector(13), OneHotEncoder()),
     )
 
 
@@ -75,8 +77,8 @@ if __name__ == '__main__':
     dummy_pipeline = make_pipeline(features, DummyClassifier('most_frequent'))
 
     all_models = {
-        #'GradientBoostingClassifier': boosting_pipeline,
-        'SVC': svc_pipeline,
+        'GradientBoostingClassifier': boosting_pipeline,
+        #'SVC': svc_pipeline,
         'DummyClassifier': dummy_pipeline
     }
 
@@ -98,4 +100,4 @@ if __name__ == '__main__':
 
     import pickle as pc
 
-    pc.dump(best_model, open('model.bin', 'wb'))
+    pc.dump(best_model, open('model2.bin', 'wb'))

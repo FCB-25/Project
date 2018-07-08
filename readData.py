@@ -68,6 +68,7 @@ temperature['TT_TU'] = pd.to_numeric(temperature['TT_TU'])
 temperature['RF_TU'] = pd.to_numeric(temperature['RF_TU'])
 wind['D'] = pd.to_numeric(wind['D'])
 
+"""
 mean_V_S1_HHS = getMean(cloud_type, 'V_S1_HHS', -999)
 mean_V_S1_NS = getMean(cloud_type, 'V_S1_NS', -999)
 mean_V_S1_CS = getMean(cloud_type, 'V_S1_CS', -999)
@@ -94,6 +95,7 @@ temperature["TT_TU"] = np.where(temperature["TT_TU"] == -999, mean_TT_TU, temper
 temperature["RF_TU"] = np.where(temperature["RF_TU"] == -999, mean_RF_TU, temperature["RF_TU"])
 precipitation["RS_IND"] = np.where(precipitation["RS_IND"] == -999, 2, precipitation["RS_IND"])
 wind["D"] = np.where(wind["D"] == -999, int(mean_D), wind["D"])
+"""
 
 result = pd.merge(cloud_type, cloudiness, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, pressure, on=['STATIONS_ID', 'MESS_DATUM'])
@@ -102,8 +104,16 @@ result = pd.merge(result, temperature, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
 
+
+for column in result:
+    col = result.get(column)
+    for i in range(0,col.size):
+        if col[i] == -999:
+            result.drop(result.index[i])
+
+
 #print(result)
 results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
                                         'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
                                         'R1', 'RS_IND',
-                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results2.csv')
+                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results_min.csv')
