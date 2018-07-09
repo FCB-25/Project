@@ -67,8 +67,9 @@ sun['SD_SO'] = pd.to_numeric(sun['SD_SO'])
 temperature['TT_TU'] = pd.to_numeric(temperature['TT_TU'])
 temperature['RF_TU'] = pd.to_numeric(temperature['RF_TU'])
 wind['D'] = pd.to_numeric(wind['D'])
+wind['F'] = pd.to_numeric(wind['F'])
 
-"""
+
 mean_V_S1_HHS = getMean(cloud_type, 'V_S1_HHS', -999)
 mean_V_S1_NS = getMean(cloud_type, 'V_S1_NS', -999)
 mean_V_S1_CS = getMean(cloud_type, 'V_S1_CS', -999)
@@ -81,6 +82,8 @@ mean_SD_SO = getMean(sun, 'SD_SO', -999)
 mean_TT_TU = getMean(temperature, 'TT_TU', -999)
 mean_RF_TU = getMean(temperature, 'RF_TU', -999)
 mean_D = getMean(wind, 'D', -999)
+mean_F = getMean(wind, 'F', -999)
+
 
 cloud_type["V_S1_HHS"] = np.where(cloud_type["V_S1_HHS"] == -999, int(mean_V_S1_HHS), cloud_type["V_S1_HHS"])
 cloud_type["V_S1_NS"] = np.where(cloud_type["V_S1_NS"] == -999, int(mean_V_S1_NS), cloud_type["V_S1_NS"])
@@ -93,9 +96,12 @@ pressure["P0"] = np.where(pressure["P0"] == -999, mean_P0, pressure["P0"])
 sun["SD_SO"] = np.where(sun["SD_SO"] == -999, mean_SD_SO, sun["SD_SO"])
 temperature["TT_TU"] = np.where(temperature["TT_TU"] == -999, mean_TT_TU, temperature["TT_TU"])
 temperature["RF_TU"] = np.where(temperature["RF_TU"] == -999, mean_RF_TU, temperature["RF_TU"])
-precipitation["RS_IND"] = np.where(precipitation["RS_IND"] == -999, 2, precipitation["RS_IND"])
+precipitation["R1"] = np.where(precipitation["R1"] == -999, 0, precipitation["R1"])
+precipitation["RS_IND"] = np.where(precipitation["RS_IND"] == -999, 0, precipitation["RS_IND"])
 wind["D"] = np.where(wind["D"] == -999, int(mean_D), wind["D"])
-"""
+wind["F"] = np.where(wind["F"] == -999, int(mean_F), wind["F"])
+
+
 
 result = pd.merge(cloud_type, cloudiness, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, pressure, on=['STATIONS_ID', 'MESS_DATUM'])
@@ -105,15 +111,8 @@ result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
 
 
-for column in result:
-    col = result.get(column)
-    for i in range(0,col.size):
-        if col[i] == -999:
-            result.drop(result.index[i])
-
-
-#print(result)
+print(result)
 results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
                                         'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
                                         'R1', 'RS_IND',
-                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results_min.csv')
+                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results_V2.csv')
