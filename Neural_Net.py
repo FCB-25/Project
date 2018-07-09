@@ -1,11 +1,9 @@
 from keras.models import Sequential
 from keras.layers import Dense
-import numpy as np
-import pandas as pd
+import keras.layers as layers
 from sklearn.model_selection import train_test_split
 from keras.models import model_from_json
-from numpy.random import seed
-import Project.util as u
+
 
 
 class neural_net:
@@ -38,13 +36,12 @@ class neural_net:
         model.save_weights(name)
         print("Saved model to disk")
 
-    def nn(modelname, inputsize, result, epochs):
+    def nn(modelname, inputsize, result, epochs,idx_y,sel):
         """ load and prepare Data """
 
         XY = result.values
 
-        sel = [x for x in range(XY.shape[1]) if x != XY.shape[1] - 1]
-        X, y = XY[:, sel], XY[:, -1]
+        X, y = XY[:, sel], XY[:, idx_y]
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_size=0.3, random_state=0)
         X_test, X_val, y_test, y_val = train_test_split(X_test, y_test, train_size=0.5, test_size=0.5, random_state=0)
 
