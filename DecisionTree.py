@@ -1,6 +1,7 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
 import pickle as pc
+from sklearn.model_selection import train_test_split
 
 
 class DecisionTree:
