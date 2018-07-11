@@ -138,7 +138,7 @@ colnames = ['V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS',
             'V_S2_NS', 'R1', 'RS_IND','P0', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3',
             'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', 'sel2_0','sel2_1','sel2_2','sel2_3','sel2_4','sel2_5','sel2_6','sel2_7','sel2_8']
 
-pd.DataFrame(result, columns=colnames).to_csv('results_medium_test.csv')
+pd.DataFrame(result, columns=colnames).to_csv('results.csv')
 
 rain = result.get('RS_IND')
 rain = rain.values
@@ -153,4 +153,4 @@ colnames = ['V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS',
             'V_S2_NS', 'R1', 'RS_IND','P0', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3',
             'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', 'sel2_0','sel2_1','sel2_2','sel2_3','sel2_4','sel2_5','sel2_6','sel2_7','sel2_8', '1H_RS_IND']
 
-results = pd.DataFrame(result, columns=colnames).to_csv('results_medium_next_hour.csv')
+results = pd.DataFrame(result, columns=colnames).to_csv('results_next_hour.csv')
