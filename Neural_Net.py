@@ -1,4 +1,5 @@
 from keras.models import Sequential
+from keras import metrics
 from keras.layers import Dense,LSTM,TimeDistributed,Activation
 import keras.layers as layers
 from sklearn.model_selection import train_test_split
@@ -48,7 +49,7 @@ class neural_net:
         model = neural_net.load_model(newmodel, modelname, inputsize)
 
         # Compile model
-        model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
+        model.compile(loss='mean_squared_error', optimizer='adam', metrics=[ metrics.categorical_accuracy])
 
         # Fit the model
         model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=epochs)
@@ -70,7 +71,7 @@ class neural_net:
         model.add(LSTM(128, return_sequences=True))
         model.add(TimeDistributed(Dense(64)))
         model.add(Activation('softmax'))
-        model.add(Dense(1,activation='sigmoid'))
+        model.add(Dense(1, activation='sigmoid'))
 
         model.compile(loss='mean_squared_error', optimizer='adam',metrics=['accuracy'])
         print("fit model...")
