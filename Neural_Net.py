@@ -1,7 +1,6 @@
 from keras.models import Sequential
 from keras import metrics
 from keras.layers import Dense,LSTM,TimeDistributed,Activation
-import keras.layers as layers
 from sklearn.model_selection import train_test_split
 from keras.models import model_from_json
 

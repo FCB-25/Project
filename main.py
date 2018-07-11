@@ -2,7 +2,6 @@ from Neural_Net import neural_net
 import Model_Tester as t
 import DecisionTree as tree
 import pandas as pd
-import sys
 import pickle as pc
 
 print("every boolean inputs must be 1 (True) or 0 (False)")

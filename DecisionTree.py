@@ -1,15 +1,11 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
 import pickle as pc
-import Model_Tester as t
-import util as u
+
 
 
 class DecisionTree:
     def run_decisionTree(data):
-
         XY = data.values
 
         sel = [x for x in range(XY.shape[1]) if x != 6]
