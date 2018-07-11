@@ -11,6 +11,7 @@ class Tester:
         X = X.reshape(X.shape[0],1,X.shape[1])
         scores = model.evaluate(X, y)
         print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
+        print("\n%s: %.2f%%" % (model.metrics_names[2], scores[2] * 100))
 
         y_pred = model.predict(X)
         x = np.zeros(y_pred.shape)

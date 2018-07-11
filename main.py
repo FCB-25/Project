@@ -61,7 +61,7 @@ if predict == 'train':
                         'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
 
             dense = 31
-            modelname = "model_next_hour"
+            modelname = "model_next_hour_test"
             result = pd.read_csv("results_next_hour.csv", names=colnames, sep=',', header=1)
             result.drop('RowID', 1, inplace=True)
 
@@ -122,9 +122,9 @@ if predict == 'train':
 
         t.Tester.test_dt(model, colnames)
 else:
-    print("The data you want to predict must be placed int the second row of testData.csv")
-    print("The model needs to be created before you can take predictions!")
-
+    print("INFO: The data you want to predict must be placed int the second row of testData.csv")
+    print("INFO: The model needs to be created before you can take predictions!")
+    print()
     nn = input(
         "Okay. Do you want to get the prediction from the neural network(1/y(yes)? (From decision tree otherwise) ")
 
@@ -143,8 +143,8 @@ else:
     if nn == '1' or nn == 'yes' or nn == 'y':
         print("Make predictions with the neural net...")
         dense = 30
-        modelname = "model_nextH_standard"
-        model = neural_net.load_model(False, modelname, dense)
+        modelname = "model_next_hour"
+        model = neural_net.load_model(False, modelname, dense,XY)
         scaler = StandardScaler()
         X = scaler.fit_transform(X)
         y_pred = model.predict(X)

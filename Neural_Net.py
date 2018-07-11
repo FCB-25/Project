@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense, LSTM, TimeDistributed, Activation
+from keras.layers import Dense, LSTM, TimeDistributed, Activation, Dropout
 from sklearn.model_selection import train_test_split
 from keras.models import model_from_json
 from sklearn.preprocessing import StandardScaler
@@ -9,8 +9,10 @@ class neural_net:
         if (new_model):
             # create model
             model = Sequential()
-            model.add(LSTM(128,input_shape=(train_X.shape[1], train_X.shape[2]),activation='sigmoid'))
-            model.add(Dense(inputsize))
+            model.add(LSTM(128,input_shape=(train_X.shape[1], train_X.shape[2]),return_sequences=True))
+            model.add(Dropout(0.5))
+            model.add(LSTM(256))
+            model.add(Dropout(0.5))
             model.add(Dense(1))
             model.add(Activation('tanh'))
         else:
@@ -22,6 +24,7 @@ class neural_net:
             # load weights into new model
             model.load_weights(name + ".h5")  # for normal NN "model.h5"
             print("Loaded model from disk")
+        model.summary()
         return model
 
     def saveModel(name, model):
