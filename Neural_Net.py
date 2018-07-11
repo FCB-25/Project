@@ -47,7 +47,7 @@ class neural_net:
         model = neural_net.load_model(newmodel, modelname, inputsize)
 
         # Compile model
-        model.compile(loss='mean_squared_error', optimizer='adam', metrics=[metrics.categorical_accuracy])
+        model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 
         # Fit the model
         model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=epochs)

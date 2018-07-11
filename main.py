@@ -28,8 +28,13 @@ if predict == 'train':
             "PLease type the right name again.. (make sure the dataset is in the directory like this class and you typed the right name) "))
 
     run_neural_net = input("Do you want to run a Neural Net? (otherwise a Decision Tree will be executed) ")
-    while run_neural_net != '1' and run_neural_net != '0':
-        run_neural_net = input("This is no valid input... please type 1 for executing a neural net or 0 otherwise ")
+    while run_neural_net != '1' and run_neural_net != '0' and run_neural_net != 'yes' and run_neural_net != 'no':
+        run_neural_net = input("This is no valid input... please type 1/yes for executing a neural net or 0/no otherwise ")
+
+    if run_neural_net == 'yes':
+        run_neural_net = '1'
+    if  run_neural_net == 'no':
+        run_neural_net = '0'
 
     new_model = input("If you want to create a new model, type 'yes' ")
     if new_model == 'yes':
