@@ -10,8 +10,7 @@ class DecisionTree:
 
         sel = [x for x in range(XY.shape[1]) if x != 6]
         X, y = XY[:, sel], XY[:, 6]
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_size=0.3, random_state=0)
-        X_test, X_val, y_test, y_val = train_test_split(X_test, y_test, train_size=0.5, test_size=0.5, random_state=0)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=0)
 
         model = GridSearchCV(
             estimator=DecisionTreeClassifier(),
