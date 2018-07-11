@@ -38,9 +38,8 @@ if __name__ == '__main__':
 
     XY = result.values
     sel = [x for x in range(XY.shape[1]) if x != 13]
-    X, y = XY[:,sel], XY[:, 13]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75,test_size=0.25, random_state=0)
-
+    X, y = XY[:, sel], XY[:, 13]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25, random_state=0)
 
     features = make_union(
         make_pipeline(ColumnSelector(0)),
@@ -63,9 +62,8 @@ if __name__ == '__main__':
         make_pipeline(ColumnSelector(17)),
         make_pipeline(ColumnSelector(18)),
 
-        #make_pipeline(ColumnSelector(13), OneHotEncoder()),
+        # make_pipeline(ColumnSelector(13), OneHotEncoder()),
     )
-
 
     svc_pipeline = GridSearchCV(
         estimator=make_pipeline(features, StandardScaler(with_mean=False), SVC()),
@@ -91,7 +89,7 @@ if __name__ == '__main__':
 
     all_models = {
         'GradientBoostingClassifier': boosting_pipeline,
-        #'SVC': svc_pipeline,
+        # 'SVC': svc_pipeline,
         'DummyClassifier': dummy_pipeline
     }
 

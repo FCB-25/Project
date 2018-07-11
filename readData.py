@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 def dropColumns(data, drop):
     # drop columns which are not needed
     for col in drop:
@@ -67,7 +68,6 @@ temperature['RF_TU'] = pd.to_numeric(temperature['RF_TU'])
 wind['D'] = pd.to_numeric(wind['D'])
 wind['F'] = pd.to_numeric(wind['F'])
 
-
 mean_V_S1_HHS = getMean(cloud_type, 'V_S1_HHS', -999)
 mean_V_S1_NS = getMean(cloud_type, 'V_S1_NS', -999)
 mean_V_S1_CS = getMean(cloud_type, 'V_S1_CS', -999)
@@ -81,7 +81,6 @@ mean_TT_TU = getMean(temperature, 'TT_TU', -999)
 mean_RF_TU = getMean(temperature, 'RF_TU', -999)
 mean_D = getMean(wind, 'D', -999)
 mean_F = getMean(wind, 'F', -999)
-
 
 cloud_type["V_S1_HHS"] = np.where(cloud_type["V_S1_HHS"] == -999, int(mean_V_S1_HHS), cloud_type["V_S1_HHS"])
 cloud_type["V_S1_NS"] = np.where(cloud_type["V_S1_NS"] == -999, int(mean_V_S1_NS), cloud_type["V_S1_NS"])
@@ -99,15 +98,12 @@ precipitation["RS_IND"] = np.where(precipitation["RS_IND"] == -999, 0, precipita
 wind["D"] = np.where(wind["D"] == -999, int(mean_D), wind["D"])
 wind["F"] = np.where(wind["F"] == -999, int(mean_F), wind["F"])
 
-
-
 result = pd.merge(cloud_type, cloudiness, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, pressure, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, precipitation, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, temperature, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
-
 
 print(result)
 results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',

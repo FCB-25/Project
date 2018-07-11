@@ -3,7 +3,6 @@ from sklearn.tree import DecisionTreeClassifier
 import pickle as pc
 
 
-
 class DecisionTree:
     def run_decisionTree(data):
         XY = data.values

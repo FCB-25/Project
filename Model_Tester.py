@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 class Tester:
 
     def test_model(model, X, y):
@@ -10,7 +11,7 @@ class Tester:
         y_pred = model.predict(X)
         x = np.zeros(y_pred.shape)
 
-        for i in range(0,y_pred.size):
+        for i in range(0, y_pred.size):
             x[i] = y[i] - y_pred[i]
         print(x)
 
@@ -24,8 +25,8 @@ class Tester:
 
         y_pred = model.predict(X)
         x = np.zeros(y_pred.shape)
-        for i in range(0,y_pred.size):
+        for i in range(0, y_pred.size):
             x[i] = y[i] - y_pred[i]
         print(x)
 
-        print("accuracy: "+str(model.score(X, y)*100)+"%")
+        print("accuracy: " + str(model.score(X, y) * 100) + "%")

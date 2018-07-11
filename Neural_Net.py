@@ -1,9 +1,8 @@
 from keras.models import Sequential
 from keras import metrics
-from keras.layers import Dense,LSTM,TimeDistributed,Activation
+from keras.layers import Dense, LSTM, TimeDistributed, Activation
 from sklearn.model_selection import train_test_split
 from keras.models import model_from_json
-
 
 
 class neural_net:
@@ -18,25 +17,25 @@ class neural_net:
             model.add(Dense(1, activation='sigmoid'))
         else:
             # load json and create model
-            json_file = open(name+".json", 'r')
+            json_file = open(name + ".json", 'r')
             loaded_model_json = json_file.read()
             json_file.close()
             model = model_from_json(loaded_model_json)
             # load weights into new model
-            model.load_weights(name+".h5")  # for normal NN "model.h5"
+            model.load_weights(name + ".h5")  # for normal NN "model.h5"
             print("Loaded model from disk")
         return model
 
     def saveModel(name, model):
         # serialize model to JSON
         model_json = model.to_json()
-        with open(name+".json", "w") as json_file:
+        with open(name + ".json", "w") as json_file:
             json_file.write(model_json)
         # serialize weights to HDF5
-        model.save_weights(name+".h5")
+        model.save_weights(name + ".h5")
         print("Saved model to disk")
 
-    def nn(modelname, inputsize, result, epochs,idx_y,sel,newmodel):
+    def nn(modelname, inputsize, result, epochs, idx_y, sel, newmodel):
         """ load and prepare Data """
 
         XY = result.values
@@ -48,7 +47,7 @@ class neural_net:
         model = neural_net.load_model(newmodel, modelname, inputsize)
 
         # Compile model
-        model.compile(loss='mean_squared_error', optimizer='adam', metrics=[ metrics.categorical_accuracy])
+        model.compile(loss='mean_squared_error', optimizer='adam', metrics=[metrics.categorical_accuracy])
 
         # Fit the model
         model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=epochs)
@@ -66,13 +65,13 @@ class neural_net:
 
         model = Sequential()
         model.add(Dense(512, input_dim=30, activation='sigmoid'))
-        model.add(LSTM(256,input_shape=(512,30), return_sequences=True))
+        model.add(LSTM(256, input_shape=(512, 30), return_sequences=True))
         model.add(LSTM(128, return_sequences=True))
         model.add(TimeDistributed(Dense(64)))
         model.add(Activation('softmax'))
         model.add(Dense(1, activation='sigmoid'))
 
-        model.compile(loss='mean_squared_error', optimizer='adam',metrics=['accuracy'])
+        model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
         print("fit model...")
         model.fit(X, y, epochs=nb_epoch, batch_size=batch_size, verbose=0, shuffle=False)
         return model

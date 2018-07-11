@@ -41,9 +41,9 @@ if predict == 'train':
         print("load data...")
         # use dataset for prediction, if it's raining now
         if dataset == 'results_V2_extended.csv' or dataset == '1':
-            colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS',
-                        'V_S2_NS', 'R1', 'RS_IND', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3',
-                        'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8']
+            colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND', 'TT_TU',
+                        'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3', 'sel_4', 'sel_5', 'sel_6',
+                        'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8']
             dense = 29
             modelname = "model"
 
@@ -56,10 +56,9 @@ if predict == 'train':
             idx_y = 6
 
         if dataset == "results_medium_next_hour.csv" or dataset == '2':
-            colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS',
-                        'V_S2_NS', 'R1', 'RS_IND', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3',
-                        'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8',
-                        '1H_RS_IND']
+            colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND', 'TT_TU',
+                        'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3', 'sel_4', 'sel_5', 'sel_6',
+                        'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
 
             dense = 30
             modelname = "model_nextH"
@@ -107,30 +106,31 @@ if predict == 'train':
             t.Tester.test_model(model, X, y)
     else:
         print("run Decision Tree with the dataset: results_medium_next_hour.csv")
-        colnames = ['V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS',
-                    'V_S2_NS', 'R1', 'RS_IND', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3',
-                    'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
+        colnames = ['V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND', 'TT_TU', 'RF_TU', 'SD_SO',
+                    'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3', 'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', '0', '1',
+                    '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
 
         result = pd.read_csv('results_medium_next_hour.csv', names=colnames, sep=',', header=1)
 
         load = input("Does a trained model already exist and you just want to test it?")
 
         if load == '1' or load == 'yes':
-            model =  pc.load(open('modeldt_1H.bin', 'rb'))
+            model = pc.load(open('modeldt_1H.bin', 'rb'))
 
         else:
             model = tree.DecisionTree.run_decisionTree(result)
 
-        t.Tester.test_dt(model,colnames)
+        t.Tester.test_dt(model, colnames)
 else:
     print("The data you want to predict must be placed int the second row of testData.csv")
     print("The model needs to be created before you can take predictions!")
 
-    nn = input("Okay. Do you want to get the prediction from the neural network(1/y(yes)? (From decision tree otherwise) ")
+    nn = input(
+        "Okay. Do you want to get the prediction from the neural network(1/y(yes)? (From decision tree otherwise) ")
 
-    colnames = ['RowID','V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS',
-                'V_S2_NS', 'R1', 'RS_IND', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3',
-                'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
+    colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND', 'TT_TU', 'RF_TU',
+                'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3', 'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', '0',
+                '1', '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
 
     testData = pd.read_csv('testData.csv', names=colnames, sep=',', header=1)
     testData.drop('RowID', 1, inplace=True)
@@ -144,7 +144,7 @@ else:
         print("Make predictions with the neural net...")
         dense = 30
         modelname = "model_nextH"
-        model = neural_net.load_model(False,modelname,dense)
+        model = neural_net.load_model(False, modelname, dense)
         y_pred = model.predict(X)
 
         for y in y_pred:
@@ -155,7 +155,7 @@ else:
 
     else:
         print("Make predictions with the Decision tree...")
-        model =  pc.load(open('modeldt_1H.bin', 'rb'))
+        model = pc.load(open('modeldt_1H.bin', 'rb'))
         y_pred = model.predict(X)
         for pred in y_pred:
             if pred < 0.5:
