@@ -1,6 +1,7 @@
 from Neural_Net import neural_net
 import Model_Tester as t
 import DecisionTree as tree
+from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import pickle as pc
 
@@ -12,20 +13,14 @@ while predict != 'train' and predict != 'predict':
     predict = input("Your choice was not clear... predict or train? ")
 
 if predict == 'train':
-    dataset = str(input("Which dataset should be used? "))
-    if dataset != 'results_medium_next_hour.csv' and dataset != 'results_V2_extended.csv':
-        dataset = str(input("This is no valid dataset... do you mean results_V2_extended.csv? "))
-        if dataset == '1' or dataset == 'yes':
-            dataset = "results_V2_extended.csv"
+    dataset = str(input("Do you want to use the dataset for the current weather? "))
 
-    if dataset != 'results_medium_next_hour.csv' and dataset != 'results_V2_extended.csv':
-        dataset = str(input("Do you mean results_medium_next_hour.csv? "))
-        if dataset == '1' or dataset == 'yes':
-            dataset = "results_medium_next_hour.csv"
+    if dataset == '1' or dataset == 'yes':
+        dataset = "results.csv"
+    else:
+        print("Okay, then you will use the dataset for the wheater in the next hour.")
+        dataset = "results_next_hour.csv"
 
-    while dataset != 'results_V2_extended.csv' and dataset != 'results_medium_next_hour.csv':
-        dataset = str(input(
-            "PLease type the right name again.. (make sure the dataset is in the directory like this class and you typed the right name) "))
 
     run_neural_net = input("Do you want to run a Neural Net? (otherwise a Decision Tree will be executed) ")
     while run_neural_net != '1' and run_neural_net != '0' and run_neural_net != 'yes' and run_neural_net != 'no':
@@ -45,11 +40,11 @@ if predict == 'train':
     if run_neural_net == '1':
         print("load data...")
         # use dataset for prediction, if it's raining now
-        if dataset == 'results_V2_extended.csv' or dataset == '1':
-            colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND', 'TT_TU',
+        if dataset == 'results.csv' or dataset == '1':
+            colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND','P0', 'TT_TU',
                         'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3', 'sel_4', 'sel_5', 'sel_6',
                         'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8']
-            dense = 29
+            dense = 30
             modelname = "model"
 
             result = pd.read_csv(dataset, names=colnames, sep=',', header=1)
@@ -60,14 +55,14 @@ if predict == 'train':
             sel = [x for x in range(XY.shape[1]) if x != 6]
             idx_y = 6
 
-        if dataset == "results_medium_next_hour.csv" or dataset == '2':
-            colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND', 'TT_TU',
+        if dataset == "results_next_hour.csv" or dataset == '2':
+            colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND','P0', 'TT_TU',
                         'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3', 'sel_4', 'sel_5', 'sel_6',
                         'sel_7', 'sel_8', '0', '1', '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
 
-            dense = 30
-            modelname = "model_nextH"
-            result = pd.read_csv("results_medium_next_hour.csv", names=colnames, sep=',', header=1)
+            dense = 31
+            modelname = "model_next_hour"
+            result = pd.read_csv("results_next_hour.csv", names=colnames, sep=',', header=1)
             result.drop('RowID', 1, inplace=True)
 
             XY = result.values
@@ -110,17 +105,17 @@ if predict == 'train':
 
             t.Tester.test_model(model, X, y)
     else:
-        print("run Decision Tree with the dataset: results_medium_next_hour.csv")
-        colnames = ['V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND', 'TT_TU', 'RF_TU', 'SD_SO',
+        print("run Decision Tree with the dataset: results_next_hour.csv")
+        colnames = ['V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND','P0', 'TT_TU', 'RF_TU', 'SD_SO',
                     'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3', 'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', '0', '1',
                     '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
 
-        result = pd.read_csv('results_medium_next_hour.csv', names=colnames, sep=',', header=1)
+        result = pd.read_csv('results_next_hour.csv', names=colnames, sep=',', header=1)
 
         load = input("Does a trained model already exist and you just want to test it?")
 
         if load == '1' or load == 'yes':
-            model = pc.load(open('modeldt_1H.bin', 'rb'))
+            model = pc.load(open('modeldt_nextH.bin', 'rb'))
 
         else:
             model = tree.DecisionTree.run_decisionTree(result)
@@ -133,7 +128,7 @@ else:
     nn = input(
         "Okay. Do you want to get the prediction from the neural network(1/y(yes)? (From decision tree otherwise) ")
 
-    colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND', 'TT_TU', 'RF_TU',
+    colnames = ['RowID', 'V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS', 'V_S2_NS', 'R1', 'RS_IND','P0', 'TT_TU', 'RF_TU',
                 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3', 'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', '0',
                 '1', '2', '3', '4', '5', '6', '7', '8', '1H_RS_IND']
 
@@ -148,8 +143,10 @@ else:
     if nn == '1' or nn == 'yes' or nn == 'y':
         print("Make predictions with the neural net...")
         dense = 30
-        modelname = "model_nextH"
+        modelname = "model_nextH_standard"
         model = neural_net.load_model(False, modelname, dense)
+        scaler = StandardScaler()
+        X = scaler.fit_transform(X)
         y_pred = model.predict(X)
 
         for y in y_pred:

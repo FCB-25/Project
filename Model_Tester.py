@@ -1,10 +1,14 @@
 import pandas as pd
 import numpy as np
-
+from sklearn.preprocessing import StandardScaler
 
 class Tester:
 
     def test_model(model, X, y):
+
+        scaler = StandardScaler()
+        X = scaler.fit_transform(X)
+        X = X.reshape(X.shape[0],1,X.shape[1])
         scores = model.evaluate(X, y)
         print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
 

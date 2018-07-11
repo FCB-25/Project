@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import util as u
 
 def dropColumns(data, drop):
     # drop columns which are not needed
@@ -105,8 +105,52 @@ result = pd.merge(result, temperature, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, sun, on=['STATIONS_ID', 'MESS_DATUM'])
 result = pd.merge(result, wind, on=['STATIONS_ID', 'MESS_DATUM'])
 
-print(result)
-results = pd.DataFrame(result, columns=['STATIONS_ID', 'MESS_DATUM', 'V_N_x', 'V_S1_CS', 'V_S1_HHS',
-                                        'V_S1_NS', 'V_S2_CS', 'V_S2_HHS', 'V_S2_NS', 'V_N_y', 'P', 'P0',
-                                        'R1', 'RS_IND',
-                                        'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D']).to_csv('results_V2.csv')
+result.drop('STATIONS_ID', 1, inplace=True)
+result.drop('MESS_DATUM', 1, inplace=True)
+result.drop('V_N_y', 1, inplace=True)
+result.drop('P', 1, inplace=True)
+
+V_S1_CS = result.get('V_S1_CS').astype(str)  # [0,9]
+V_S2_CS = result.get('V_S2_CS').astype(str)  # [0,9]
+RS_IND = result.get('RS_IND').astype(str)  # [0,1]
+
+XY = result.values
+
+sel = u.ColumnSelector(1).transform(XY)
+sel2 = u.ColumnSelector(4).transform(XY)
+
+coder = u.OneHotEncoder()
+
+coder = coder.fit(sel)
+sel = coder.transform(sel)
+
+coder = coder.fit(sel2)
+sel2 = coder.transform(sel2)
+colnames = ['sel_0','sel_1','sel_2','sel_3','sel_4','sel_5','sel_6','sel_7','sel_8']
+colnames2 = ['sel2_0','sel2_1','sel2_2','sel2_3','sel2_4','sel2_5','sel2_6','sel2_7','sel2_8']
+result = result.join(pd.DataFrame(sel,columns=colnames))
+result = result.join(pd.DataFrame(sel2,columns=colnames2))
+
+result.drop('V_S1_CS',1, inplace=True)
+result.drop('V_S2_CS',1, inplace=True)
+
+colnames = ['V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS',
+            'V_S2_NS', 'R1', 'RS_IND','P0', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3',
+            'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', 'sel2_0','sel2_1','sel2_2','sel2_3','sel2_4','sel2_5','sel2_6','sel2_7','sel2_8']
+
+pd.DataFrame(result, columns=colnames).to_csv('results_medium_test.csv')
+
+rain = result.get('RS_IND')
+rain = rain.values
+
+rain = rain[1:]
+
+result = result.join(pd.DataFrame(rain, columns=['1H_RS_IND']))
+
+result = result[:-1]
+
+colnames = ['V_N_x', 'V_S1_HHS', 'V_S1_NS', 'V_S2_HHS',
+            'V_S2_NS', 'R1', 'RS_IND','P0', 'TT_TU', 'RF_TU', 'SD_SO', 'F', 'D', 'sel_0', 'sel_1', 'sel_2', 'sel_3',
+            'sel_4', 'sel_5', 'sel_6', 'sel_7', 'sel_8', 'sel2_0','sel2_1','sel2_2','sel2_3','sel2_4','sel2_5','sel2_6','sel2_7','sel2_8', '1H_RS_IND']
+
+results = pd.DataFrame(result, columns=colnames).to_csv('results_medium_next_hour.csv')

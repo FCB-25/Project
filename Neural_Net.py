@@ -1,20 +1,18 @@
 from keras.models import Sequential
-from keras import metrics
 from keras.layers import Dense, LSTM, TimeDistributed, Activation
 from sklearn.model_selection import train_test_split
 from keras.models import model_from_json
-
+from sklearn.preprocessing import StandardScaler
 
 class neural_net:
-    def load_model(new_model, name, inputsize):
+    def load_model(new_model, name, inputsize,train_X):
         if (new_model):
             # create model
             model = Sequential()
-            model.add(LSTM())
-            model.add(Dense(512, input_dim=inputsize, activation='sigmoid'))
-            model.add(Dense(256, activation='sigmoid'))
-            model.add(Dense(inputsize, activation='tanh'))
-            model.add(Dense(1, activation='sigmoid'))
+            model.add(LSTM(128,input_shape=(train_X.shape[1], train_X.shape[2]),activation='sigmoid'))
+            model.add(Dense(inputsize))
+            model.add(Dense(1))
+            model.add(Activation('tanh'))
         else:
             # load json and create model
             json_file = open(name + ".json", 'r')
@@ -37,41 +35,33 @@ class neural_net:
 
     def nn(modelname, inputsize, result, epochs, idx_y, sel, newmodel):
         """ load and prepare Data """
-
+        scaler = StandardScaler()
         XY = result.values
 
         X, y = XY[:, sel], XY[:, idx_y]
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_size=0.3, random_state=0)
         X_test, X_val, y_test, y_val = train_test_split(X_test, y_test, train_size=0.5, test_size=0.5, random_state=0)
 
-        model = neural_net.load_model(newmodel, modelname, inputsize)
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.fit_transform(X_test)
+        X_val = scaler.fit_transform(X_val)
+
+        X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1]))
+        X_test = X_test.reshape((X_test.shape[0], 1, X_test.shape[1]))
+        X_val = X_val.reshape((X_val.shape[0], 1, X_val.shape[1]))
+
+        model = neural_net.load_model(newmodel, modelname, inputsize,X_train)
 
         # Compile model
-        model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
+        model.compile(loss='mean_squared_error', optimizer='adam',metrics=['mse','accuracy'])
 
         # Fit the model
-        model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=epochs)
+        model.fit(X_train,y_train,epochs=epochs, batch_size=72, validation_data=(X_val, y_val), verbose=2, shuffle=False)
 
         # evaluate the model
         scores = model.evaluate(X_test, y_test)
         print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
+        print("\n%s: %.2f%%" % (model.metrics_names[2], scores[2] * 100))
 
         neural_net.saveModel(modelname, model)
-        return model
-
-    def fit_lstm(train, batch_size, nb_epoch, neurons):
-        X, y = train[:, 0:-1], train[:, -1]
-        X = X.reshape(X.shape[0], 1, X.shape[1])
-
-        model = Sequential()
-        model.add(Dense(512, input_dim=30, activation='sigmoid'))
-        model.add(LSTM(256, input_shape=(512, 30), return_sequences=True))
-        model.add(LSTM(128, return_sequences=True))
-        model.add(TimeDistributed(Dense(64)))
-        model.add(Activation('softmax'))
-        model.add(Dense(1, activation='sigmoid'))
-
-        model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
-        print("fit model...")
-        model.fit(X, y, epochs=nb_epoch, batch_size=batch_size, verbose=0, shuffle=False)
         return model
